@@ -1,4 +1,4 @@
-package com.learning.redis.demo.redisdemo;
+package com.learning.redis.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

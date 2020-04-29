@@ -4,3 +4,12 @@ spring:
     port: 6379
   cache:
     type: redis
+  rabbitmq:
+    username: test
+    password: test
+    host: localhost
+    listener:
+      simple:
+        acknowledge-mode: manual
+    publisher-confirm-type: correlated
+    virtual-host: test
