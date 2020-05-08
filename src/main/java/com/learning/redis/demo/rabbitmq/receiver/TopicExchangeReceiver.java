@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CountDownLatch;
 
 @Component
-public class Receiver implements ChannelAwareMessageListener {
+public class TopicExchangeReceiver implements ChannelAwareMessageListener {
     private CountDownLatch latch = new CountDownLatch(1);
 
     public void receiveMessage(String message) {
