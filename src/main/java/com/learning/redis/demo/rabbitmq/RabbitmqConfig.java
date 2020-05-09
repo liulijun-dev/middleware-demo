@@ -15,9 +15,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitmqConfig {
-    static final String TOPIC_EXCHANGE_NAME = "topic-exchange";
+    static final String TOPIC_EXCHANGE_NAME = "topic_exchange";
 
-    private static final String queueName = "spring-boot";
+    private static final String queueName = "spring_boot";
 
     @Bean
     public Queue queue() {
@@ -52,6 +52,11 @@ public class RabbitmqConfig {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 
+    @Bean
+    public Queue receiveMessageFromSenderDirectly() {
+        return new Queue("receive_message_from_sender_directly");
+    }
+
     private static class DirectExchangeConfig {
         private static final String DIRECT_EXCHANGE_NAME = "color_direct-exchange";
         private static final String DIRECT_EXCHANGE_QUEUE_NAME = "binding_to_multi_exchange";
@@ -76,13 +81,30 @@ public class RabbitmqConfig {
         }*/
     }
 
-    private static class DefaultExchangeConfig {
-        private static final String DEFAULT_EXCHANGE_NAME = "default-exchange";
-        private static final String DEFAULT_QUEUE_NAME = "default-queue";
+    private static class TopicExchangeConfig {
+        @Bean
+        public TopicExchange topicExchangeForNotify() {
+            return new TopicExchange("topic_exchange_for_notify", false, true);
+        }
 
         @Bean
-        public Queue defaultExchangeQueue() {
-            return new Queue(DEFAULT_QUEUE_NAME);
+        public Queue criticalQueue() {
+            return new Queue("critical", false);
+        }
+
+        @Bean
+        public Queue rateLimitQueue() {
+            return new Queue("rate_limit", false);
+        }
+
+        @Bean
+        public Binding bindingCriticalQueue(TopicExchange topicExchangeForNotify, Queue criticalQueue) {
+            return BindingBuilder.bind(criticalQueue).to(topicExchangeForNotify).with("critical.*");
+        }
+
+        @Bean
+        public Binding bindingRateLimitQueue(TopicExchange topicExchangeForNotify, Queue rateLimitQueue) {
+            return BindingBuilder.bind(rateLimitQueue).to(topicExchangeForNotify).with("*.rate_limit");
         }
     }
 }

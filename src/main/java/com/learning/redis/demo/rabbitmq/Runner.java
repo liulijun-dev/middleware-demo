@@ -26,11 +26,11 @@ public class Runner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Sending message...");
         rabbitTemplate.setConfirmCallback((CorrelationData correlationData, boolean ack, String cause) -> {
-            System.out.println("================");
+           /* System.out.println("================");
             System.out.println("correlationData = " + correlationData);
             System.out.println("ack = " + ack);
             System.out.println("cause = " + cause);
-            System.out.println("================");
+            System.out.println("================");*/
         });
         rabbitTemplate.convertAndSend(RabbitmqConfig.TOPIC_EXCHANGE_NAME, "foo.bar.baz", "Hello from RabbitMQ!");
         receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);

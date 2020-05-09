@@ -6,19 +6,19 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DefaultExchangeSender {
+public class QueueSender {
     private final RabbitTemplate rabbitTemplate;
-    private final Queue defaultExchangeQueue;
+    private final Queue receiveMessageFromSenderDirectly;
 
-    public DefaultExchangeSender(RabbitTemplate rabbitTemplate, Queue defaultExchangeQueue) {
+    public QueueSender(RabbitTemplate rabbitTemplate, Queue receiveMessageFromSenderDirectly) {
         this.rabbitTemplate = rabbitTemplate;
-        this.defaultExchangeQueue = defaultExchangeQueue;
+        this.receiveMessageFromSenderDirectly = receiveMessageFromSenderDirectly;
     }
 
     @Scheduled(fixedDelay = 1000, initialDelay = 500)
     public void send() {
         String message = "Hello World!";
-        this.rabbitTemplate.convertAndSend(defaultExchangeQueue.getName(), message);
-        System.out.println(" [x] Sent '" + message + "'");
+        this.rabbitTemplate.convertAndSend(receiveMessageFromSenderDirectly.getName(), message);
+        System.out.println(" [QueueSender] Sent '" + message + "'");
     }
 }

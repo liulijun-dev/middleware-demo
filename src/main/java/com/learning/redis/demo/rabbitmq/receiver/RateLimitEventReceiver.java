@@ -4,11 +4,12 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+@RabbitListener(queues = {"rate_limit"})
 @Component
-@RabbitListener(queues = {"default-queue"})
-public class DefaultExchangeReceiver {
+public class RateLimitEventReceiver {
+
     @RabbitHandler
     public void receive(String in) {
-        System.out.println(" [x] Received from default exchange '" + in + "'");
+        System.out.println(" [RateLimitEventReceiver] Received from topic exchange '" + in + "'");
     }
 }
