@@ -5,6 +5,7 @@ import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -12,6 +13,9 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class RabbitmqConfig {
@@ -57,7 +61,7 @@ public class RabbitmqConfig {
         return new Queue("receive_message_from_sender_directly");
     }
 
-    private static class DirectExchangeConfig {
+    public static class DirectExchangeConfig {
         private static final String DIRECT_EXCHANGE_NAME = "color_direct-exchange";
         private static final String DIRECT_EXCHANGE_QUEUE_NAME = "binding_to_multi_exchange";
         @Bean
@@ -81,7 +85,7 @@ public class RabbitmqConfig {
         }*/
     }
 
-    private static class TopicExchangeConfig {
+    public static class TopicExchangeConfig {
         @Bean
         public TopicExchange topicExchangeForEvent() {
             return new TopicExchange("topic_exchange_for_event", false, true);
@@ -105,6 +109,25 @@ public class RabbitmqConfig {
         @Bean
         public Binding bindingRateLimitQueue(TopicExchange topicExchangeForEvent, Queue rateLimitQueue) {
             return BindingBuilder.bind(rateLimitQueue).to(topicExchangeForEvent).with("*.rate_limit");
+        }
+    }
+
+    public static class FanoutExchangeConfig {
+        @Bean
+        public FanoutExchange fanoutExchangeForParallelTask() {
+            Map<String, Object> arguments = new HashMap<>();
+            arguments.put("name", "parallel_task_fanout_exchange");
+            return new FanoutExchange("parallel_task_fanout_exchange", true, true, arguments);
+        }
+
+        @Bean
+        public Queue queueForParallelTask() {
+            return new Queue("parallel_task_queue");
+        }
+
+        @Bean
+        public Binding bindingForParallelTask(Queue queueForParallelTask, FanoutExchange fanoutExchangeForParallelTask) {
+            return BindingBuilder.bind(queueForParallelTask).to(fanoutExchangeForParallelTask);
         }
     }
 }
