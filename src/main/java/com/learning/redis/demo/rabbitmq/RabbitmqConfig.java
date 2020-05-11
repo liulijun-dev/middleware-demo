@@ -83,8 +83,8 @@ public class RabbitmqConfig {
 
     private static class TopicExchangeConfig {
         @Bean
-        public TopicExchange topicExchangeForNotify() {
-            return new TopicExchange("topic_exchange_for_notify", false, true);
+        public TopicExchange topicExchangeForEvent() {
+            return new TopicExchange("topic_exchange_for_event", false, true);
         }
 
         @Bean
@@ -98,13 +98,13 @@ public class RabbitmqConfig {
         }
 
         @Bean
-        public Binding bindingCriticalQueue(TopicExchange topicExchangeForNotify, Queue criticalQueue) {
-            return BindingBuilder.bind(criticalQueue).to(topicExchangeForNotify).with("critical.*");
+        public Binding bindingCriticalQueue(TopicExchange topicExchangeForEvent, Queue criticalQueue) {
+            return BindingBuilder.bind(criticalQueue).to(topicExchangeForEvent).with("critical.*");
         }
 
         @Bean
-        public Binding bindingRateLimitQueue(TopicExchange topicExchangeForNotify, Queue rateLimitQueue) {
-            return BindingBuilder.bind(rateLimitQueue).to(topicExchangeForNotify).with("*.rate_limit");
+        public Binding bindingRateLimitQueue(TopicExchange topicExchangeForEvent, Queue rateLimitQueue) {
+            return BindingBuilder.bind(rateLimitQueue).to(topicExchangeForEvent).with("*.rate_limit");
         }
     }
 }

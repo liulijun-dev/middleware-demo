@@ -8,17 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventSender {
     private final RabbitTemplate rabbitTemplate;
-    private TopicExchange topicExchangeForNotify;
+    private TopicExchange topicExchangeForEvent;
 
-    public EventSender(RabbitTemplate rabbitTemplate, TopicExchange topicExchangeForNotify) {
+    public EventSender(RabbitTemplate rabbitTemplate, TopicExchange topicExchangeForEvent) {
         this.rabbitTemplate = rabbitTemplate;
-        this.topicExchangeForNotify = topicExchangeForNotify;
+        this.topicExchangeForEvent = topicExchangeForEvent;
     }
 
     @Scheduled(fixedDelay = 1000)
     public void send() {
         String message = "ID 1234567 maybe not a rean user";
-        rabbitTemplate.convertAndSend(topicExchangeForNotify.getName(), "critical.rate_limit", message);
-        System.out.println(" [EventSender] Sent '" + message + "'");
+        rabbitTemplate.convertAndSend(topicExchangeForEvent.getName(), "critical.rate_limit", message);
+        System.out.println("[EventSender] Sent '" + message + "'");
     }
 }

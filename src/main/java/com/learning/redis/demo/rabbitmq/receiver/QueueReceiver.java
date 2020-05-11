@@ -5,10 +5,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RabbitListener(queues = {"receive_message_from_sender_directly"})
 public class QueueReceiver {
-    @RabbitHandler
+    @RabbitListener(queues = "#{receiveMessageFromSenderDirectly.name}", ackMode = "AUTO")
     public void receive(String in) {
-        System.out.println(" [QueueReceiver] Received from default exchange '" + in + "'");
+        System.out.println("[QueueReceiver] Received from default exchange '" + in + "'");
     }
 }

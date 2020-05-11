@@ -19,6 +19,6 @@ public class QueueSender {
     public void send() {
         String message = "Hello World!";
         this.rabbitTemplate.convertAndSend(receiveMessageFromSenderDirectly.getName(), message);
-        System.out.println(" [QueueSender] Sent '" + message + "'");
+        System.out.println("[QueueSender] Sent '" + message + "'");
     }
 }
