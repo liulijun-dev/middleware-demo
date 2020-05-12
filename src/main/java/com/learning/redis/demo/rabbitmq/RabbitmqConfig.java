@@ -130,4 +130,26 @@ public class RabbitmqConfig {
             return BindingBuilder.bind(queueForParallelTask).to(fanoutExchangeForParallelTask);
         }
     }
+
+    public static class RpcConfig {
+        @Bean
+        public DirectExchange rpcDirectExchange() {
+            return new DirectExchange("rpc", false, true);
+        }
+
+        @Bean
+        public Queue rpcRequestQueue() {
+            return new Queue("rpc-requests", false);
+        }
+
+        @Bean
+        public Queue rpcResponseQueue() {
+            return new Queue("rpc-response", false, true, true);
+        }
+
+        @Bean
+        public Binding rpcBinding(DirectExchange rpcDirectExchange, Queue rpcRequestQueue) {
+            return BindingBuilder.bind(rpcRequestQueue).to(rpcDirectExchange).with("rpc.request");
+        }
+    }
 }
